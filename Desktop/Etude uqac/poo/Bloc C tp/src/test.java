@@ -1,4 +1,8 @@
 
+import Voiture.Voiture;
+import dynamique.VoitureFactory;
+import Voiture.Surveillable;
+
 import java.util.ArrayList;
 import java.util.List;
 public class test {
@@ -58,7 +62,7 @@ public class test {
             if (v.getClass().getName().contains("Meta")){
                 int depassement = ((Surveillable)v).surveiller(60);
                 if (depassement > 10)
-                    throw new Exception("ID : " + v.getId() + " --> depassement de" + depassement + " (" + v.getClass() + ")");
+                    throw new Exception("ID : " + v.getId() + " --> depassement de " + depassement + " (" + v.getClass() + ")");
             }
         }
     }

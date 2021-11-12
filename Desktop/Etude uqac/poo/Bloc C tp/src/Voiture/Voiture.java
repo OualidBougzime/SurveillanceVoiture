@@ -1,4 +1,4 @@
-
+package Voiture;
 
 public class Voiture {
     private int vitesse;
@@ -7,16 +7,14 @@ public class Voiture {
 
     private static int _id = 0;
 
-    public Voiture(){
-
-        this.vitesse = 0;
-        this.position = 0;
-        this.id++;
-    }
 
 
     public Voiture(int vitesse){
+
         this.vitesse = vitesse;
+        this.position = 0;
+        this.id = Voiture._id;
+        Voiture._id++;
     }
 
     public void deplacement(){
