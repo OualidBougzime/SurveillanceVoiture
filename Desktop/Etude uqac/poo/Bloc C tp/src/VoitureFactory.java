@@ -1,9 +1,17 @@
-package Factory;
+import dynamique.ByteArrayClass;
+import dynamique.ByteArrayClasseLoader;
+import dynamique.StringSource;
 
-import Factory.Voiture.Voiture;
+import javax.tools.*;
+import javax.tools.JavaFileObject;
+import javax.tools.ToolProvider;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 import java.lang.*;
-import java.lang.reflect.InvocationTargetException;
 
 public class VoitureFactory {
     public enum ModeConstruction {INSTANCIATION, REFLEXION, META};
@@ -25,7 +33,7 @@ public class VoitureFactory {
                     return (VoitureSport) v.getDeclaredConstructor().newInstance();
 
                 } else {
-                    Class v = Class.forName("Factory.Voiture.Voiture");
+                    Class v = Class.forName("Voiture");
                     return (Voiture) v.getDeclaredConstructor(int.class).newInstance();
 
                 }
@@ -64,7 +72,7 @@ public class VoitureFactory {
             }
             // ******** ETAPE #2 : Génération du code source
             List<JavaFileObject> sources = List.of(
-                    buildVoiture(monClasse, sport, vitesse);
+                    buildSource(monClasse, vitesse, sport)
             );
             // ******** ETAPE #3 : Compilation
             JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, collector, null,
@@ -88,10 +96,10 @@ public class VoitureFactory {
             ByteArrayClasseLoader loader = new ByteArrayClasseLoader(classes);
             try{
                 if(sport == true){
-                    return (Voiture)(Class.forName("MetaVoitureSport", true, loader).getDeclaredConstructor().newInstance();
+                    return (Voiture) Class.forName("MetaVoitureSport", true, loader).getDeclaredConstructor().newInstance();
                 }
                 else{
-                    return (Voiture)(Class.forName("MetaVoiture", true, loader).getDeclaredConstructor().newInstance();
+                    return (Voiture) Class.forName("MetaVoiture", true, loader).getDeclaredConstructor().newInstance();
                 }
             }
             catch (ClassNotFoundException | NoSuchMethodException e) {
@@ -104,9 +112,10 @@ public class VoitureFactory {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 
-            public static JavaFileObject buildSource(String nomClasse) {
+            public static JavaFileObject buildSource(String monClasse, int vitesse, boolean sport) {
 
                 StringBuilder sb = new StringBuilder();
 
@@ -115,26 +124,26 @@ public class VoitureFactory {
                     sb.append("public class " + monClasse + " extends VoitureSport implements Surveillable{\n");
                 }
                 else{
-                    sb.append("public class " + monClasse + " extends Factory.Voiture.Factory.Voiture implements Surveillable{\n");
+                    sb.append("public class " + monClasse + " extends Voiture implements Surveillable{\n");
 
                 }
                 genererAttributs(sb);
-                genererConstructeurs(nomClasse, x, sb);
+                genererConstructeurs(monClasse, vitesse, sb);
                 genererMethodes(sb);
                 sb.append("}\n");
 
                 System.out.println("LA CLASSE");
                 System.out.println(sb);
 
-                return new StringSource(nomClasse, sb.toString());
+                return new StringSource(monClasse, sb.toString());
             }
 
-            private static void genererConstructeurs(String nomClasse, int x, StringBuilder sb) {
+            private static void genererConstructeurs(String monClasse, int vitesse, StringBuilder sb) {
                 if(monClasse.equals("MetaVoitureSport")) {
-                    sb.append("public " + nomClasse + "(){super();\n" + "metaVitesse = 200;}\n");
+                    sb.append("public " + monClasse + "(){super();\n" + "metaVitesse = 200;}\n");
                 }
                 else{
-                    sb.append("public " + nomClasse + "(){super(" + vitesse + ");\n" + "metaVitesse = " + vitesse +";}\n");
+                    sb.append("public " + monClasse + "(){super(" + vitesse + ");\n" + "metaVitesse = " + vitesse +";}\n");
 
                 }
             }

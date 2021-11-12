@@ -1,4 +1,4 @@
-package Factory.Voiture;
+
 
 public class Voiture {
     private int vitesse;
@@ -7,11 +7,19 @@ public class Voiture {
 
     private static int _id = 0;
 
+    public Voiture(){
+
+        this.vitesse = 0;
+        this.position = 0;
+        this.id++;
+    }
+
+
     public Voiture(int vitesse){
         this.vitesse = vitesse;
     }
 
-    public void Deplacement(){
+    public void deplacement(){
         position += vitesse;
 
     }
